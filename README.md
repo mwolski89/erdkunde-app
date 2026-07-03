@@ -89,5 +89,8 @@ python3 build_map.py ../data/europe-map.json
 - 🏛️ Hauptstädte-Modus (gleiche Karte, andere Frage)
 - 🚩 Flaggen-Quiz ohne Karte (Multiple Choice)
 - 🌍 Ganze Welt als drehbare Erdkugel (höherer Schwierigkeitsgrad)
-- 🔊 Vorlesefunktion für Leseanfänger (Web Speech API)
 - 🏅 Sammelalbum: gefundene Länder als Sticker
+
+Bereits umgesetzt: 🔊 Vorlesefunktion für Leseanfänger (Web Speech API,
+`js/core/speech.js`) – liest Fragen und Fakten automatisch vor (abschaltbar
+im Startbildschirm), 🔊-Buttons zum Wiederholen.

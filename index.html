@@ -16,6 +16,7 @@
       <h1 class="logo"><span class="logo-globe">🌍</span><br>Erdkunde-Abenteuer</h1>
       <p class="tagline">Findest du alle Länder?</p>
       <div id="menu" class="menu"></div>
+      <button id="speech-toggle" type="button" class="btn-toggle hidden"></button>
       <p id="best-score" class="best"></p>
     </div>
   </section>
@@ -31,6 +32,7 @@
     <div id="question-banner">
       <span id="q-flag">🇨🇭</span>
       <span id="q-text">Wo ist die Schweiz?</span>
+      <button id="q-speak" type="button" class="speak-btn" aria-label="Frage vorlesen">🔊</button>
     </div>
 
     <div id="combo-badge" class="hidden">🔥</div>
@@ -40,7 +42,10 @@
     <div id="feedback" class="feedback hidden">
       <p id="feedback-title"></p>
       <p id="feedback-fact"></p>
-      <button id="feedback-next" type="button" class="btn">Weiter ▶</button>
+      <div class="feedback-actions">
+        <button id="feedback-speak" type="button" class="speak-btn" aria-label="Nochmal vorlesen">🔊</button>
+        <button id="feedback-next" type="button" class="btn">Weiter ▶</button>
+      </div>
     </div>
   </section>
 

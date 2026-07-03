@@ -4,6 +4,7 @@
 import { MODES, LEVELS } from './modes/registry.js';
 import { loadBestScore, saveBestScore } from './core/storage.js';
 import { unlock as unlockAudio, sounds } from './core/audio.js';
+import * as speech from './core/speech.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -49,6 +50,8 @@ async function startLevel(level) {
       combo: $('combo-badge'),
       qFlag: $('q-flag'),
       qText: $('q-text'),
+      qSpeak: $('q-speak'),
+      feedbackSpeak: $('feedback-speak'),
       feedback: $('feedback'),
       feedbackTitle: $('feedback-title'),
       feedbackFact: $('feedback-fact'),
@@ -95,6 +98,7 @@ function renderMenu() {
     if (!level.locked) {
       btn.addEventListener('click', () => {
         unlockAudio(); // iOS: Ton braucht eine Nutzeraktion
+        speech.warmup(); // dito für die Vorlesestimme
         startLevel(level).catch((err) => {
           console.error(err);
           alert('Ohje, das Spiel konnte nicht laden. Bitte Seite neu laden.');
@@ -108,6 +112,20 @@ function renderMenu() {
   $('best-score').textContent = best > 0 ? `Dein Rekord: ⭐ ${best} Punkte` : '';
 }
 
+// Auto-Vorlesen an/aus (nur zeigen, wenn der Browser Sprachausgabe kann)
+function renderSpeechToggle() {
+  const toggle = $('speech-toggle');
+  if (!speech.isSupported) return;
+  toggle.classList.remove('hidden');
+  toggle.textContent = speech.isEnabled() ? '🔊 Vorlesen: AN' : '🔇 Vorlesen: AUS';
+}
+
+$('speech-toggle').addEventListener('click', () => {
+  speech.setEnabled(!speech.isEnabled());
+  renderSpeechToggle();
+  if (speech.isEnabled()) speech.speak('Hallo! Ich lese dir jetzt alles vor.');
+});
+
 $('end-retry').addEventListener('click', () => startLevel(currentLevel));
 $('end-menu').addEventListener('click', () => {
   renderMenu();
@@ -115,4 +133,5 @@ $('end-menu').addEventListener('click', () => {
 });
 
 renderMenu();
+renderSpeechToggle();
 showScreen('start');
