@@ -84,6 +84,52 @@ html, body {
 
 .best { margin-top: 18px; font-size: 1rem; color: #6a7a8a; min-height: 1.2em; }
 
+/* ---------- Vorlesen ---------- */
+
+.speak-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #eaf4fb;
+  font-size: 1.35rem;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(43, 58, 74, 0.15);
+  touch-action: manipulation;
+}
+.speak-btn:active { transform: scale(0.88); }
+.speak-btn.speaking { animation: wiggle 0.6s ease-in-out infinite; background: #ffe9c7; }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+.btn-toggle {
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #4a5a6a;
+  background: #eef3f7;
+  border: 2px solid #d5dfe8;
+  border-radius: 999px;
+  padding: 8px 18px;
+  margin-top: 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.btn-toggle:active { transform: scale(0.96); }
+
+.feedback-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.feedback-actions .speak-btn { margin-left: 0; }
+
 .end-emoji { font-size: 4.5rem; }
 .end-stars { font-size: 2.6rem; letter-spacing: 6px; margin: 8px 0; }
 .end-score { font-size: 1.8rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; }

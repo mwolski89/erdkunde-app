@@ -9,6 +9,7 @@
 import { GameSession } from '../core/session.js';
 import { EuropeMap } from '../map/europe-map.js';
 import { sounds } from '../core/audio.js';
+import { speak, autoSpeak, stop as stopSpeech } from '../core/speech.js';
 
 const NEXT_DELAY_MS = 5000; // automatisch weiter, falls das Kind nicht tippt
 
@@ -41,6 +42,16 @@ export function createGame(ctx) {
   const map = new EuropeMap(el.mapContainer, mapData);
 
   let nextTimer = null;
+  let questionText = '';
+  let feedbackSpeechText = '';
+
+  // Vorlesen mit wackelndem 🔊-Button; auto = nur wenn Auto-Vorlesen an ist
+  function speakWith(btn, text, { auto = false } = {}) {
+    const done = auto ? autoSpeak(text) : speak(text);
+    if (!done) return null;
+    btn.classList.add('speaking');
+    return done.then(() => btn.classList.remove('speaking'));
+  }
 
   function updateHud() {
     el.progress.textContent = `${Math.min(session.index + 1, session.questionCount)}/${session.questionCount}`;
@@ -58,23 +69,28 @@ export function createGame(ctx) {
     const iso2 = questions[session.index];
     const country = content.countries[iso2];
     el.qFlag.textContent = flagEmoji(iso2);
-    el.qText.textContent = `Wo ist ${country.name}?`;
+    questionText = `Wo ist ${country.name}?`;
+    el.qText.textContent = questionText;
     el.feedback.classList.add('hidden');
     map.clearMarks();
     map.resetView();
     map.setEnabled(true);
     updateHud();
+    speakWith(el.qSpeak, questionText, { auto: true });
   }
 
-  function showFeedback(kind, title, fact) {
+  // speechText: eigens formulierter Vorlese-Text (natürlicher als der Bildschirmtext)
+  function showFeedback(kind, title, fact, speechText) {
     el.feedback.className = `feedback ${kind}`;
     el.feedbackTitle.textContent = title;
     el.feedbackFact.textContent = fact || '';
     el.feedbackFact.classList.toggle('hidden', !fact);
+    feedbackSpeechText = speechText;
   }
 
   function proceed() {
     clearTimeout(nextTimer);
+    stopSpeech();
     if (session.next()) {
       showQuestion();
     } else {
@@ -92,23 +108,44 @@ export function createGame(ctx) {
       sounds.correct();
       map.mark(targetIso2, 'correct');
       const cheer = session.combo >= 3 ? `Super, ${session.combo} richtige hintereinander!` : 'Richtig!';
-      showFeedback('good', `${cheer} +${points} Punkte 🎉`, content.countries[targetIso2].fact);
+      const fact = content.countries[targetIso2].fact;
+      showFeedback('good', `${cheer} +${points} Punkte 🎉`, fact,
+        `${cheer} Du bekommst ${points} Punkte. ${fact || ''}`);
     } else {
       session.answerWrong();
       sounds.wrong();
       map.mark(tappedIso2, 'wrong');
       map.mark(targetIso2, 'reveal');
       map.zoomToCountry(targetIso2, 30);
+      const targetName = capitalize(content.countries[targetIso2].name);
       const tappedName = content.countries[tappedIso2]?.name;
       const hint = tappedName ? `Das war ${tappedName}. ` : '';
-      showFeedback('bad', `Ups! ${hint}${capitalize(content.countries[targetIso2].name)} leuchtet hier! 💡`);
+      showFeedback('bad', `Ups! ${hint}${targetName} leuchtet hier! 💡`,
+        null, `Ups! ${hint}Schau, hier leuchtet ${content.countries[targetIso2].name}.`);
     }
     updateHud();
+    scheduleNext(speakWith(el.feedbackSpeak, feedbackSpeechText, { auto: true }));
+  }
+
+  // Automatisch weiter: normal nach NEXT_DELAY_MS; wird gerade vorgelesen,
+  // dann erst kurz nach dem Ende des Vorlesens.
+  function scheduleNext(spokenPromise) {
+    clearTimeout(nextTimer);
     nextTimer = setTimeout(proceed, NEXT_DELAY_MS);
+    if (!spokenPromise) return;
+    const idx = session.index;
+    spokenPromise.then(() => {
+      if (session.index !== idx) return; // Frage wurde inzwischen gewechselt
+      clearTimeout(nextTimer);
+      nextTimer = setTimeout(proceed, 1500);
+    });
   }
 
   map.onTap = handleTap;
   el.nextBtn.onclick = proceed;
+  el.qSpeak.onclick = () => speakWith(el.qSpeak, questionText);
+  // erneutes Anhören verschiebt auch das automatische Weiterschalten
+  el.feedbackSpeak.onclick = () => scheduleNext(speakWith(el.feedbackSpeak, feedbackSpeechText));
 
   return {
     start() {
@@ -116,6 +153,7 @@ export function createGame(ctx) {
     },
     stop() {
       clearTimeout(nextTimer);
+      stopSpeech();
     },
   };
 }
