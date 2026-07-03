@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Erdkunde-Abenteuer 🌍</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Startbildschirm -->
+  <section id="screen-start" class="screen">
+    <div class="start-card">
+      <h1 class="logo"><span class="logo-globe">🌍</span><br>Erdkunde-Abenteuer</h1>
+      <p class="tagline">Findest du alle Länder?</p>
+      <div id="menu" class="menu"></div>
+      <p id="best-score" class="best"></p>
+    </div>
+  </section>
+
+  <!-- Spielbildschirm -->
+  <section id="screen-game" class="screen hidden">
+    <header id="hud">
+      <div id="hud-progress" class="hud-chip">1/15</div>
+      <div id="hud-lives" class="hud-chip">❤️❤️❤️</div>
+      <div id="hud-score" class="hud-chip">⭐ 0</div>
+    </header>
+
+    <div id="question-banner">
+      <span id="q-flag">🇨🇭</span>
+      <span id="q-text">Wo ist die Schweiz?</span>
+    </div>
+
+    <div id="combo-badge" class="hidden">🔥</div>
+
+    <div id="map-container"></div>
+
+    <div id="feedback" class="feedback hidden">
+      <p id="feedback-title"></p>
+      <p id="feedback-fact"></p>
+      <button id="feedback-next" type="button" class="btn">Weiter ▶</button>
+    </div>
+  </section>
+
+  <!-- Ergebnisbildschirm -->
+  <section id="screen-end" class="screen hidden">
+    <div class="start-card">
+      <div id="end-emoji" class="end-emoji">🎉</div>
+      <h2 id="end-title">Geschafft!</h2>
+      <div id="end-stars" class="end-stars">⭐⭐⭐</div>
+      <p id="end-score" class="end-score">0 Punkte</p>
+      <p id="end-message"></p>
+      <p id="end-best" class="best"></p>
+      <div class="menu">
+        <button id="end-retry" type="button" class="btn btn-big">🔄 Nochmal spielen</button>
+        <button id="end-menu" type="button" class="btn btn-big btn-secondary">🏠 Zum Menü</button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
