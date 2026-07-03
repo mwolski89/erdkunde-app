@@ -130,6 +130,23 @@ html, body {
 }
 .feedback-actions .speak-btn { margin-left: 0; }
 
+.hud-mute {
+  border: none;
+  font: inherit;
+  font-size: 1.05rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.hud-mute:active { transform: scale(0.92); }
+.hud-mute.off { background: #e3e9ee; opacity: 0.75; }
+
+/* Vorlesen ausgeschaltet oder vom Browser nicht unterstützt:
+   alle Vorlese-Knöpfe ausblenden */
+body.speech-off .speak-btn { display: none; }
+body.no-speech .speak-btn,
+body.no-speech .hud-mute,
+body.no-speech #speech-toggle { display: none; }
+
 .end-emoji { font-size: 4.5rem; }
 .end-stars { font-size: 2.6rem; letter-spacing: 6px; margin: 8px 0; }
 .end-score { font-size: 1.8rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
