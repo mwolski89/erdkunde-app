@@ -112,19 +112,31 @@ function renderMenu() {
   $('best-score').textContent = best > 0 ? `Dein Rekord: ⭐ ${best} Punkte` : '';
 }
 
-// Auto-Vorlesen an/aus (nur zeigen, wenn der Browser Sprachausgabe kann)
-function renderSpeechToggle() {
-  const toggle = $('speech-toggle');
+// Vorlesen an/aus – ein gemeinsamer Zustand für den Schalter im
+// Startbildschirm und den 🔊/🔇-Knopf in der Spiel-Kopfleiste.
+// Ausgeschaltet heißt komplett aus: laufende Ausgabe stoppt,
+// alle Vorlese-Knöpfe werden ausgeblendet.
+function updateSpeechUi() {
+  document.body.classList.toggle('no-speech', !speech.isSupported);
   if (!speech.isSupported) return;
+  const on = speech.isEnabled();
+  document.body.classList.toggle('speech-off', !on);
+  const toggle = $('speech-toggle');
   toggle.classList.remove('hidden');
-  toggle.textContent = speech.isEnabled() ? '🔊 Vorlesen: AN' : '🔇 Vorlesen: AUS';
+  toggle.textContent = on ? '🔊 Vorlesen: AN' : '🔇 Vorlesen: AUS';
+  const mute = $('hud-mute');
+  mute.textContent = on ? '🔊' : '🔇';
+  mute.classList.toggle('off', !on);
 }
 
-$('speech-toggle').addEventListener('click', () => {
-  speech.setEnabled(!speech.isEnabled());
-  renderSpeechToggle();
-  if (speech.isEnabled()) speech.speak('Hallo! Ich lese dir jetzt alles vor.');
-});
+function toggleSpeech({ announce = false } = {}) {
+  speech.setEnabled(!speech.isEnabled()); // schaltet aus + stoppt laufende Ausgabe
+  updateSpeechUi();
+  if (announce && speech.isEnabled()) speech.speak('Hallo! Ich lese dir jetzt alles vor.');
+}
+
+$('speech-toggle').addEventListener('click', () => toggleSpeech({ announce: true }));
+$('hud-mute').addEventListener('click', () => toggleSpeech());
 
 $('end-retry').addEventListener('click', () => startLevel(currentLevel));
 $('end-menu').addEventListener('click', () => {
@@ -133,5 +145,5 @@ $('end-menu').addEventListener('click', () => {
 });
 
 renderMenu();
-renderSpeechToggle();
+updateSpeechUi();
 showScreen('start');
