@@ -1,9 +1,13 @@
 // Interaktive Europakarte als SVG.
 // Rendert die vorberechneten Länderpfade, meldet angetippte Länder und
 // unterstützt Zoomen (Pinch, Mausrad, Buttons) und Verschieben per Finger.
+//
+// Die Kartendaten können größer sein als die Startansicht: `home` ist der
+// Europa-Ausschnitt, die Gesamtfläche (inkl. ganz Russland) ist per
+// Schwenken und Herauszoomen erreichbar.
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const MAX_ZOOM = 8;
+const MAX_ZOOM = 8; // maximale Vergrößerung relativ zur Startansicht
 const TAP_TOLERANCE_PX = 10; // mehr Bewegung = Verschieben statt Antippen
 
 export class EuropeMap {
@@ -12,16 +16,18 @@ export class EuropeMap {
     this.onTap = null; // Callback: (iso2) => void
     this.enabled = true;
     this.paths = new Map();
-    this.home = { x: 0, y: 0, w: mapData.width, h: mapData.height };
+    this.world = { w: mapData.width, h: mapData.height };
+    this.home = mapData.home ?? { x: 0, y: 0, w: mapData.width, h: mapData.height };
+    this.aspect = this.home.h / this.home.w; // Seitenverhältnis aller Ansichten
     this.vb = { ...this.home };
     this.#render(mapData);
     this.#initPointerHandling();
   }
 
-  #render({ width, height, countries }) {
+  #render({ countries }) {
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.classList.add('europe-map');
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('viewBox', `${this.home.x} ${this.home.y} ${this.home.w} ${this.home.h}`);
     for (const c of countries) {
       const p = document.createElementNS(SVG_NS, 'path');
       p.setAttribute('d', c.d);
@@ -73,11 +79,19 @@ export class EuropeMap {
   }
 
   #clamp() {
+    // Zoombereich: von "ganz Europa vergrößert" bis "gesamte Karte sichtbar"
     const minW = this.home.w / MAX_ZOOM;
-    this.vb.w = Math.min(this.home.w, Math.max(minW, this.vb.w));
-    this.vb.h = this.vb.w * (this.home.h / this.home.w);
-    this.vb.x = Math.min(this.home.w - this.vb.w, Math.max(0, this.vb.x));
-    this.vb.y = Math.min(this.home.h - this.vb.h, Math.max(0, this.vb.y));
+    this.vb.w = Math.min(this.world.w, Math.max(minW, this.vb.w));
+    this.vb.h = this.vb.w * this.aspect;
+    this.vb.x = this.#clampAxis(this.vb.x, this.vb.w, this.world.w);
+    this.vb.y = this.#clampAxis(this.vb.y, this.vb.h, this.world.h);
+  }
+
+  // Ausschnitt innerhalb der Karte halten; ist der Ausschnitt größer als
+  // die Karte (ganz herausgezoomt), wird zentriert statt geklemmt
+  #clampAxis(pos, size, worldSize) {
+    if (size >= worldSize) return (worldSize - size) / 2;
+    return Math.min(worldSize - size, Math.max(0, pos));
   }
 
   #toSvgPoint(clientX, clientY) {

@@ -81,8 +81,16 @@ data/
 ```bash
 cd tools
 curl -sLO https://raw.githubusercontent.com/leakyMirror/map-of-europe/master/GeoJSON/europe.geojson
+# Der Europa-Datensatz schneidet Russland bei ~46° Ost ab – vollständige
+# Geometrie aus Natural Earth holen (wird automatisch eingesetzt):
+curl -sL https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); ru=[f for f in d['features'] if f['properties']['ADMIN']=='Russia']; json.dump({'type':'FeatureCollection','features':ru}, open('russia-full.geojson','w'))"
 python3 build_map.py ../data/europe-map.json
 ```
+
+Die Karte enthält ganz Russland (bis zur Datumsgrenze); die Startansicht
+(`home` in der JSON) bleibt auf Europa fokussiert, der Osten ist per
+Schwenken/Herauszoomen erreichbar.
 
 ## Roadmap-Ideen
 
