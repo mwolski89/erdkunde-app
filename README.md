@@ -81,16 +81,27 @@ data/
 ```bash
 cd tools
 curl -sLO https://raw.githubusercontent.com/leakyMirror/map-of-europe/master/GeoJSON/europe.geojson
-# Der Europa-Datensatz schneidet Russland bei ~46° Ost ab – vollständige
-# Geometrie aus Natural Earth holen (wird automatisch eingesetzt):
-curl -sL https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); ru=[f for f in d['features'] if f['properties']['ADMIN']=='Russia']; json.dump({'type':'FeatureCollection','features':ru}, open('russia-full.geojson','w'))"
+# world-extras.geojson aus Natural Earth erzeugen (siehe extract_extras.py):
+# enthält die vollständige Russland-Geometrie (der Europa-Datensatz schneidet
+# bei ~46° Ost ab) sowie die Hintergrundländer.
+curl -sLO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson
+python3 extract_extras.py
 python3 build_map.py ../data/europe-map.json
 ```
 
-Die Karte enthält ganz Russland (bis zur Datumsgrenze); die Startansicht
-(`home` in der JSON) bleibt auf Europa fokussiert, der Osten ist per
-Schwenken/Herauszoomen erreichbar.
+Kartenaufbau:
+
+- **Spielbare Länder** kommen aus `europe.geojson`; Russland wird durch die
+  vollständige Natural-Earth-Geometrie ersetzt und zeigt seinen europäischen
+  Teil (Kartengrenze 66° Ost, Ural). Geschnitten wird knapp außerhalb des
+  sichtbaren Bereichs, sodass am Kartenrand nie eine künstliche Schnittkante
+  zu sehen ist.
+- **Hintergrundländer** (Nordafrika, Naher Osten, Zentralasien, Grönland,
+  Spitzbergen) sind dezent eingefärbt, nicht antippbar und dienen nur der
+  Orientierung. Die Karte reicht von 28° Nord (Sahara-Rand) bis 82° Nord
+  (Franz-Josef-Land, Arktis).
+- Die Startansicht (`home` in der JSON) bleibt auf Europa fokussiert;
+  per Schwenken/Herauszoomen sind die Nachbarregionen erreichbar.
 
 ## Roadmap-Ideen
 
@@ -100,5 +111,5 @@ Schwenken/Herauszoomen erreichbar.
 - 🏅 Sammelalbum: gefundene Länder als Sticker
 
 Bereits umgesetzt: 🔊 Vorlesefunktion für Leseanfänger (Web Speech API,
-`js/core/speech.js`) – liest Fragen und Fakten automatisch vor (abschaltbar
-im Startbildschirm), 🔊-Buttons zum Wiederholen.
+`js/core/speech.js`) – liest Fragen und Fakten vor, standardmäßig aus und
+zuschaltbar im Startbildschirm oder über den 🔊/🔇-Knopf im Spiel.

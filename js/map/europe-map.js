@@ -32,9 +32,14 @@ export class EuropeMap {
       const p = document.createElementNS(SVG_NS, 'path');
       p.setAttribute('d', c.d);
       p.classList.add('country');
-      p.dataset.iso2 = c.iso2;
+      if (c.bg) {
+        // Nachbarland ausserhalb des Spiels: nur Orientierung, nicht antippbar
+        p.classList.add('background');
+      } else {
+        p.dataset.iso2 = c.iso2;
+        this.paths.set(c.iso2, p);
+      }
       svg.appendChild(p);
-      this.paths.set(c.iso2, p);
     }
     this.svg = svg;
     this.container.appendChild(svg);

@@ -235,6 +235,14 @@ body.no-speech #speech-toggle { display: none; }
   transition: fill 0.15s;
 }
 
+/* Nachbarländer (Nordafrika, Naher Osten, Grönland …): nur Orientierung */
+.country.background {
+  fill: #eae3cd;
+  stroke: #cfc4a5;
+  pointer-events: none;
+  cursor: default;
+}
+
 @media (hover: hover) {
   .europe-map:not(.map-disabled) .country:hover { fill: #ffd166; }
 }

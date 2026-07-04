@@ -9,9 +9,11 @@ const PREF_KEY = 'erdkunde.speech';
 
 export const isSupported = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 
-let enabled = true;
+// Standardmäßig AUS – Vorlesen ist bewusst zuschaltbar.
+// Wer es einmal eingeschaltet hat, behält die Einstellung.
+let enabled = false;
 try {
-  enabled = localStorage.getItem(PREF_KEY) !== 'off';
+  enabled = localStorage.getItem(PREF_KEY) === 'on';
 } catch { /* privater Modus */ }
 
 let voice = null;

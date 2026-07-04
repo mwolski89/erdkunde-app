@@ -5,11 +5,15 @@ import json, math, sys
 SRC = "europe.geojson"
 OUT = sys.argv[1] if len(sys.argv) > 1 else "europe-map.json"
 
-# Gesamtausdehnung (Grad): Island bis Tschukotka, Zypern bis Franz-Josef-Land.
-# Russland liegt vollstaendig auf der Karte; die Startansicht (home) bleibt
-# auf Europa fokussiert, der Rest ist per Schwenken/Zoomen erreichbar.
-LON_MIN, LON_MAX = -25.0, 191.0
-LAT_MIN, LAT_MAX = 34.0, 82.0
+# Gesamtausdehnung (Grad): Island bis Ural, Nordafrika bis Franz-Josef-Land.
+# Russland ist nur mit seinem europaeischen Teil auf der Karte; geschnitten
+# wird knapp AUSSERHALB des sichtbaren Bereichs (CLIP_MARGIN), damit am
+# Kartenrand nie eine kuenstliche Schnittkante sichtbar ist.
+# Nachbarregionen (Nordafrika, Naher Osten, Groenland, Spitzbergen) liegen
+# als nicht antippbare Hintergrundlaender zur Orientierung auf der Karte.
+LON_MIN, LON_MAX = -25.0, 66.0
+LAT_MIN, LAT_MAX = 28.0, 82.0
+CLIP_MARGIN = 20.0  # SVG-Einheiten jenseits des Kartenrands
 # Startansicht Europa
 HOME_LON_MAX = 46.0
 HOME_LAT_MIN, HOME_LAT_MAX = 34.0, 71.6
@@ -19,10 +23,6 @@ W = (LON_MAX - LON_MIN) * math.cos(LAT0) * SCALE
 H = (LAT_MAX - LAT_MIN) * SCALE
 
 def project(lon, lat):
-    # Tschukotka liegt jenseits der Datumsgrenze (Laengengrad -180..-168):
-    # um 360 Grad verschieben, damit Russland zusammenhaengend bleibt
-    if lon < -30.0:
-        lon += 360.0
     x = (lon - LON_MIN) * math.cos(LAT0) * SCALE
     y = (LAT_MAX - lat) * SCALE
     return (round(x, 1), round(y, 1))
@@ -59,40 +59,84 @@ def simplify(pts, tol):
 
 def ring_area(pts):
     s = 0.0
-    for i in range(len(pts) - 1):
-        s += pts[i][0] * pts[i + 1][1] - pts[i + 1][0] * pts[i][1]
+    for i in range(len(pts)):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % len(pts)]
+        s += x1 * y2 - x2 * y1
     return abs(s) / 2.0
+
+# Sutherland-Hodgman: Polygon an einer Halbebene beschneiden
+def clip_halfplane(pts, inside, intersect):
+    out = []
+    for i in range(len(pts)):
+        prev, cur = pts[i - 1], pts[i]
+        if inside(cur):
+            if not inside(prev):
+                out.append(intersect(prev, cur))
+            out.append(cur)
+        elif inside(prev):
+            out.append(intersect(prev, cur))
+    return out
+
+def clip_to_map(pts):
+    x_max = W + CLIP_MARGIN
+    y_max = H + CLIP_MARGIN
+    edges = [
+        (lambda p: p[0] <= x_max, lambda a, b: _cut_x(a, b, x_max)),
+        (lambda p: p[0] >= -CLIP_MARGIN, lambda a, b: _cut_x(a, b, -CLIP_MARGIN)),
+        (lambda p: p[1] <= y_max, lambda a, b: _cut_y(a, b, y_max)),
+        (lambda p: p[1] >= -CLIP_MARGIN, lambda a, b: _cut_y(a, b, -CLIP_MARGIN)),
+    ]
+    for inside, intersect in edges:
+        pts = clip_halfplane(pts, inside, intersect)
+        if len(pts) < 3:
+            return []
+    return pts
+
+def _cut_x(a, b, x):
+    t = (x - a[0]) / (b[0] - a[0])
+    return (round(x, 1), round(a[1] + t * (b[1] - a[1]), 1))
+
+def _cut_y(a, b, y):
+    t = (y - a[1]) / (b[1] - a[1])
+    return (round(a[0] + t * (b[0] - a[0]), 1), round(y, 1))
 
 def ring_to_path(ring, tol):
     pts = [project(lon, lat) for lon, lat in ring]
+    if pts[0] == pts[-1]:
+        pts = pts[:-1]  # GeoJSON-Ringe sind geschlossen, wir arbeiten offen
+    pts = clip_to_map(pts)
     pts = simplify(pts, tol)
-    if len(pts) < 4:
+    if len(pts) < 3:
         return None, 0.0
     a = ring_area(pts)
     d = f"M{pts[0][0]} {pts[0][1]}"
-    for x, y in pts[1:-1]:
+    for x, y in pts[1:]:
         d += f"L{x} {y}"
     return d + "Z", a
 
 data = json.load(open(SRC))
 
-# Der Europa-Datensatz schneidet Russland bei ~46 Grad Ost ab. Liegt eine
-# russia-full.geojson (aus Natural Earth) daneben, ersetzen wir die
-# Geometrie durch die vollstaendige.
+# world-extras.geojson (aus Natural Earth, siehe README):
+#  - ROLE=override:   ersetzt beschnittene Geometrie im Europa-Datensatz
+#                     (Russland endet dort bei ~46 Grad Ost)
+#  - ROLE=background: Nachbarlaender, nur zur Orientierung (nicht antippbar)
+background_feats = []
 try:
-    ru_full = json.load(open("russia-full.geojson"))["features"][0]
-    for ft in data["features"]:
-        if ft["properties"]["ISO2"] == "RU":
-            ft["geometry"] = ru_full["geometry"]
-            print("Russland durch vollstaendige Geometrie ersetzt")
-            break
+    for extra in json.load(open("world-extras.geojson"))["features"]:
+        role = extra["properties"]["ROLE"]
+        if role == "override":
+            for ft in data["features"]:
+                if ft["properties"]["ISO2"] == extra["properties"]["ISO2"]:
+                    ft["geometry"] = extra["geometry"]
+                    print(f"{extra['properties']['ADMIN']}: Geometrie ersetzt")
+                    break
+        else:
+            background_feats.append(extra)
 except FileNotFoundError:
-    print("Hinweis: russia-full.geojson fehlt, Russland bleibt beschnitten")
+    print("Hinweis: world-extras.geojson fehlt – keine Hintergrundlaender")
 
-countries = []
-for ft in data["features"]:
-    props = ft["properties"]
-    iso2 = props["ISO2"]
+def feature_to_country(ft, iso2, name, bg=False):
     geom = ft["geometry"]
     polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
     rings = []
@@ -101,16 +145,31 @@ for ft in data["features"]:
         if d:
             rings.append((d, area))
     if not rings:
-        # Zwergstaaten: groebste Geometrie trotzdem als Punkt-Kreis behandeln -> ueberspringen
-        continue
+        # Zwergstaaten oder komplett ausserhalb des Kartenausschnitts
+        return None
     rings.sort(key=lambda r: -r[1])
     biggest = rings[0][1]
     # kleine Inseln weglassen, aber Hauptflaeche immer behalten;
     # Obergrenze, damit riesige Laender (Russland) ihre Exklaven und
     # grossen Inseln (Kaliningrad, Nowaja Semlja) nicht verlieren
     threshold = max(3.0, min(biggest * 0.02, 40.0))
-    kept = [d for d, a in rings if a >= threshold]
-    countries.append({"iso2": iso2, "name": props["NAME"], "d": "".join(kept)})
+    country = {"iso2": iso2, "name": name, "d": "".join(d for d, a in rings if a >= threshold)}
+    if bg:
+        country["bg"] = 1
+    return country
+
+# Hintergrund zuerst, damit die spielbaren Laender darueber gezeichnet werden
+countries = []
+for ft in background_feats:
+    c = feature_to_country(ft, ft["properties"]["ISO2"], ft["properties"]["ADMIN"], bg=True)
+    if c:
+        countries.append(c)
+n_background = len(countries)
+
+for ft in data["features"]:
+    c = feature_to_country(ft, ft["properties"]["ISO2"], ft["properties"]["NAME"])
+    if c:
+        countries.append(c)
 
 home_x, home_y = project(LON_MIN, HOME_LAT_MAX)
 home_x2, home_y2 = project(HOME_LON_MAX, HOME_LAT_MIN)
@@ -125,4 +184,5 @@ out = {
 }
 json.dump(out, open(OUT, "w"), separators=(",", ":"))
 size = len(json.dumps(out, separators=(",", ":")))
-print(f"{len(countries)} Laender, {size/1024:.0f} kB, viewBox 0 0 {out['width']} {out['height']}")
+print(f"{len(countries) - n_background} Laender + {n_background} Hintergrund, "
+      f"{size/1024:.0f} kB, viewBox 0 0 {out['width']} {out['height']}")
