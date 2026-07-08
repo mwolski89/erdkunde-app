@@ -4,11 +4,12 @@
 // mit eigenem Kartendatensatz und eigenem Fragen-Pool im Inhaltspaket.
 
 import { createGame as locateCountry } from './locate-country.js';
+import { createGame as flagQuiz } from './flag-quiz.js';
 
 export const MODES = {
   'locate-country': locateCountry,
+  'flag-quiz': flagQuiz,
   // 'locate-capital': ...   (geplant)
-  // 'flag-quiz': ...        (geplant)
   // 'multiple-choice': ...  (geplant)
 };
 
@@ -19,6 +20,14 @@ export const LEVELS = [
     mode: 'locate-country',
     map: 'data/europe-map.json',
     content: 'data/countries-de.json',
+    pool: 'easy',
+    locked: false,
+  },
+  {
+    id: 'flaggen-quiz',
+    title: '🚩 Flaggen-Quiz',
+    mode: 'flag-quiz',
+    content: 'data/countries-de.json', // keine Karte nötig
     pool: 'easy',
     locked: false,
   },

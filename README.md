@@ -41,7 +41,9 @@ js/
     europe-map.js     wiederverwendbare SVG-Karte: Antippen, Pinch-Zoom, Verschieben
   modes/
     registry.js       Liste aller Spielmodi + Level
+    shared.js         gemeinsamer Rundenablauf (HUD, Feedback, Vorlesen, Weiter)
     locate-country.js Modus „Land auf der Karte finden"
+    flag-quiz.js      Modus „Flaggen-Quiz" (4 Flaggen, eine richtig)
 data/
   europe-map.json     vorberechnete SVG-Pfade der Ländergrenzen (~61 kB)
   countries-de.json   Inhaltspaket: deutsche Namen, Fakten, Fragen-Pools
@@ -106,7 +108,6 @@ Kartenaufbau:
 ## Roadmap-Ideen
 
 - 🏛️ Hauptstädte-Modus (gleiche Karte, andere Frage)
-- 🚩 Flaggen-Quiz ohne Karte (Multiple Choice)
 - 🌍 Ganze Welt als drehbare Erdkugel (höherer Schwierigkeitsgrad)
 - 🏅 Sammelalbum: gefundene Länder als Sticker
 

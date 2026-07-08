@@ -35,7 +35,10 @@ let currentLevel = null;
 
 async function startLevel(level) {
   currentLevel = level;
-  const [mapData, content] = await Promise.all([loadJson(level.map), loadJson(level.content)]);
+  const [mapData, content] = await Promise.all([
+    level.map ? loadJson(level.map) : null, // nicht jeder Modus braucht eine Karte
+    loadJson(level.content),
+  ]);
 
   currentGame?.stop?.();
   currentGame = MODES[level.mode]({
@@ -108,8 +111,13 @@ function renderMenu() {
     menu.appendChild(btn);
   }
 
-  const best = loadBestScore(LEVELS[0].id);
-  $('best-score').textContent = best > 0 ? `Dein Rekord: ⭐ ${best} Punkte` : '';
+  // Rekorde aller freigeschalteten Level (Emoji des Leveltitels + Punkte)
+  const records = LEVELS.filter((l) => !l.locked)
+    .map((l) => ({ icon: l.title.split(' ')[0], best: loadBestScore(l.id) }))
+    .filter((r) => r.best > 0);
+  $('best-score').textContent = records.length
+    ? 'Deine Rekorde: ' + records.map((r) => `${r.icon} ${r.best}`).join('   ')
+    : '';
 }
 
 // Vorlesen an/aus – ein gemeinsamer Zustand für den Schalter im

@@ -259,6 +259,62 @@ body.no-speech #speech-toggle { display: none; }
 }
 @keyframes pulse { 50% { fill: #8ee59a; } }
 
+/* ---------- Flaggen-Quiz ---------- */
+
+/* gleiche Fläche wie die Karte, aber ohne Wasser-Optik */
+#map-container.flag-area {
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flag-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+  padding: 12px;
+}
+
+.flag-option {
+  font-size: clamp(3.2rem, 16vw, 5.5rem);
+  line-height: 1;
+  padding: 8vh 0;
+  max-height: 200px;
+  background: var(--card);
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #d8dee4, 0 8px 18px rgba(43, 58, 74, 0.15);
+  transition: transform 0.1s;
+  touch-action: manipulation;
+}
+.flag-grid:not(.locked) .flag-option:active { transform: translateY(4px); box-shadow: 0 2px 0 #d8dee4; }
+.flag-grid.locked .flag-option { cursor: default; }
+
+.flag-option.correct {
+  background: #d9f4de;
+  box-shadow: 0 6px 0 #7fc48c, 0 8px 18px rgba(46, 133, 64, 0.25);
+  animation: pop 0.3s ease-out;
+}
+.flag-option.wrong {
+  background: #fde3e0;
+  box-shadow: 0 6px 0 #e0958e, 0 8px 18px rgba(192, 57, 43, 0.25);
+  animation: shake 0.4s;
+}
+.flag-option.reveal {
+  background: #d9f4de;
+  box-shadow: 0 6px 0 #7fc48c, 0 8px 18px rgba(46, 133, 64, 0.25);
+  animation: flag-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes flag-pulse {
+  50% { background: #b0e8bc; transform: scale(1.04); }
+}
+
 .map-controls {
   position: absolute;
   right: 10px;
