@@ -5,7 +5,7 @@
 // können keine Flaggen doppelt auftauchen. Punkte, Leben und Kombo sind
 // identisch zum Karten-Modus (gemeinsame GameSession über shared.js).
 
-import { createFlow, flagEmoji, shuffle } from './shared.js';
+import { createFlow, flagEmoji, shuffle, capitalize } from './shared.js';
 
 const OPTION_COUNT = 4;
 
@@ -43,9 +43,17 @@ export function createGame({ level, content, elements: el, onFinished }) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'flag-option';
-      btn.textContent = flagEmoji(iso2);
       btn.dataset.iso2 = iso2;
       btn.setAttribute('aria-label', content.countries[iso2].name);
+      // Flagge + Ländername; der Name wird erst nach der Antwort sichtbar
+      // (Lerneffekt: man sieht dann, welche Flagge zu welchem Land gehört)
+      const flag = document.createElement('span');
+      flag.className = 'flag-emoji';
+      flag.textContent = flagEmoji(iso2);
+      const name = document.createElement('span');
+      name.className = 'flag-name';
+      name.textContent = capitalize(content.countries[iso2].name);
+      btn.append(flag, name);
       btn.addEventListener('click', () => handleChoice(iso2, btn));
       grid.appendChild(btn);
     }

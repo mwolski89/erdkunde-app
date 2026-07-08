@@ -293,9 +293,12 @@ body.no-speech #speech-toggle { display: none; }
 }
 
 .flag-option {
-  font-size: clamp(3.2rem, 16vw, 5.5rem);
-  line-height: 1;
-  padding: 8vh 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: max(3.5vh, 18px) 8px;
   max-height: 200px;
   background: var(--card);
   border: none;
@@ -305,6 +308,23 @@ body.no-speech #speech-toggle { display: none; }
   transition: transform 0.1s;
   touch-action: manipulation;
 }
+
+.flag-emoji {
+  font-size: clamp(3rem, 14vw, 5rem);
+  line-height: 1;
+}
+
+/* Ländername: erst nach der Antwort sichtbar (Lerneffekt) */
+.flag-name {
+  font: inherit;
+  font-size: clamp(0.85rem, 3.2vw, 1.05rem);
+  font-weight: bold;
+  color: var(--ink);
+  min-height: 1.2em;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.flag-grid.locked .flag-name { opacity: 1; }
 .flag-grid:not(.locked) .flag-option:active { transform: translateY(4px); box-shadow: 0 2px 0 #d8dee4; }
 .flag-grid.locked .flag-option { cursor: default; }
 
