@@ -247,6 +247,19 @@ body.no-speech #speech-toggle { display: none; }
   .europe-map:not(.map-disabled) .country:hover { fill: #ffd166; }
 }
 
+/* Bereits gefragte Länder: bleiben bis zum Rundenende eingefärbt.
+   Muss VOR .correct/.wrong/.reveal stehen, damit die aktiven Markierungen
+   während des Feedbacks gewinnen. */
+.country.done-right { fill: #b7e6bd; stroke: #74b880; }
+.country.done-wrong { fill: #f8d5ab; stroke: #d3a165; }
+
+/* Flaggen-Emoji auf bereits gefragten Ländern */
+.country-flag {
+  pointer-events: none;
+  user-select: none;
+  animation: pop 0.3s ease-out;
+}
+
 .country.correct { fill: var(--good); stroke: #2e8540; animation: pop-country 0.4s ease-out; }
 .country.wrong { fill: var(--bad); stroke: #c0392b; animation: shake 0.4s; }
 .country.reveal { fill: var(--good); stroke: #2e8540; animation: pulse 0.9s ease-in-out infinite; }

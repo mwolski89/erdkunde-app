@@ -28,6 +28,11 @@ export class EuropeMap {
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.classList.add('europe-map');
     svg.setAttribute('viewBox', `${this.home.x} ${this.home.y} ${this.home.w} ${this.home.h}`);
+    // Laender und Flaggen-Labels in getrennten Gruppen, damit die Flaggen
+    // immer ueber den Laenderflaechen liegen
+    const gCountries = document.createElementNS(SVG_NS, 'g');
+    const gLabels = document.createElementNS(SVG_NS, 'g');
+    this.labels = new Map(); // iso2 -> [x, y, size] fuer die Flagge auf dem Land
     for (const c of countries) {
       const p = document.createElementNS(SVG_NS, 'path');
       p.setAttribute('d', c.d);
@@ -38,9 +43,13 @@ export class EuropeMap {
       } else {
         p.dataset.iso2 = c.iso2;
         this.paths.set(c.iso2, p);
+        if (c.label) this.labels.set(c.iso2, c.label);
       }
-      svg.appendChild(p);
+      gCountries.appendChild(p);
     }
+    svg.appendChild(gCountries);
+    svg.appendChild(gLabels);
+    this.gLabels = gLabels;
     this.svg = svg;
     this.container.appendChild(svg);
 
@@ -69,6 +78,27 @@ export class EuropeMap {
 
   clearMarks() {
     for (const p of this.paths.values()) p.classList.remove('correct', 'wrong', 'reveal');
+  }
+
+  // Land dauerhaft als „schon gefragt" markieren (kind: 'right' | 'wrong')
+  // und seine Flagge auf dem Land anzeigen. Bleibt bis zum Rundenende stehen.
+  setDone(iso2, kind, flagText) {
+    const p = this.paths.get(iso2);
+    if (!p) return;
+    p.classList.add('done', `done-${kind}`);
+    const label = this.labels.get(iso2);
+    if (!label || this.gLabels.querySelector(`[data-flag="${iso2}"]`)) return;
+    const [x, y, size] = label;
+    const text = document.createElementNS(SVG_NS, 'text');
+    text.setAttribute('x', x);
+    text.setAttribute('y', y);
+    text.setAttribute('dy', '0.35em');
+    text.setAttribute('font-size', size);
+    text.setAttribute('text-anchor', 'middle');
+    text.classList.add('country-flag');
+    text.dataset.flag = iso2;
+    text.textContent = flagText;
+    this.gLabels.appendChild(text);
   }
 
   setEnabled(enabled) {

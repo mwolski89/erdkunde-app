@@ -108,12 +108,35 @@ def ring_to_path(ring, tol):
     pts = clip_to_map(pts)
     pts = simplify(pts, tol)
     if len(pts) < 3:
-        return None, 0.0
+        return None, 0.0, None
     a = ring_area(pts)
     d = f"M{pts[0][0]} {pts[0][1]}"
     for x, y in pts[1:]:
         d += f"L{x} {y}"
-    return d + "Z", a
+    return d + "Z", a, pts
+
+def ring_centroid(pts):
+    sx = sy = sa = 0.0
+    for i in range(len(pts)):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % len(pts)]
+        cross = x1 * y2 - x2 * y1
+        sx += (x1 + x2) * cross
+        sy += (y1 + y2) * cross
+        sa += cross
+    if sa == 0:
+        return pts[0]
+    return (sx / (3 * sa), sy / (3 * sa))
+
+# Handkorrekturen fuer Laender, deren Schwerpunkt unguenstig liegt
+# (z. B. Kroatiens Halbmondform): Position in Grad (lon, lat)
+LABEL_TWEAKS = {
+    "HR": (15.8, 45.6),   # Schwerpunkt laege sonst fast in Bosnien
+    "NO": (8.5, 60.8),    # ins suedliche Norwegen statt in die Berge
+    "SE": (15.0, 59.5),   # etwas nach Sueden, weg vom schmalen Norden
+    "GB": (-1.5, 52.5),   # England statt Bboxmitte in der Irischen See
+    "RU": (38.0, 56.5),   # europaeischer Teil (Region Moskau)
+}
 
 data = json.load(open(SRC))
 
@@ -141,9 +164,9 @@ def feature_to_country(ft, iso2, name, bg=False):
     polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
     rings = []
     for poly in polys:
-        d, area = ring_to_path(poly[0], tol=0.6)  # nur Aussenring, Toleranz in SVG-Einheiten
+        d, area, pts = ring_to_path(poly[0], tol=0.6)  # nur Aussenring, Toleranz in SVG-Einheiten
         if d:
-            rings.append((d, area))
+            rings.append((d, area, pts))
     if not rings:
         # Zwergstaaten oder komplett ausserhalb des Kartenausschnitts
         return None
@@ -153,9 +176,18 @@ def feature_to_country(ft, iso2, name, bg=False):
     # Obergrenze, damit riesige Laender (Russland) ihre Exklaven und
     # grossen Inseln (Kaliningrad, Nowaja Semlja) nicht verlieren
     threshold = max(3.0, min(biggest * 0.02, 40.0))
-    country = {"iso2": iso2, "name": name, "d": "".join(d for d, a in rings if a >= threshold)}
+    country = {"iso2": iso2, "name": name, "d": "".join(d for d, a, _ in rings if a >= threshold)}
     if bg:
         country["bg"] = 1
+    else:
+        # Ankerpunkt fuer die Flagge auf dem Land (Schwerpunkt der
+        # Hauptflaeche, ggf. Handkorrektur) + Groesse nach Landesflaeche
+        if iso2 in LABEL_TWEAKS:
+            cx, cy = project(*LABEL_TWEAKS[iso2])
+        else:
+            cx, cy = ring_centroid(rings[0][2])
+        size = round(min(26.0, max(7.0, biggest ** 0.5 * 0.45)))
+        country["label"] = [round(cx, 1), round(cy, 1), size]
     return country
 
 # Hintergrund zuerst, damit die spielbaren Laender darueber gezeichnet werden

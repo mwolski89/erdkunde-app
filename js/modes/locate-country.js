@@ -30,6 +30,9 @@ export function createGame({ level, mapData, content, elements: el, onFinished }
     const targetIso2 = questions[session.index];
     map.setEnabled(false);
 
+    // Gefragtes Land bleibt bis zum Rundenende markiert, mit Flagge darauf
+    map.setDone(targetIso2, tappedIso2 === targetIso2 ? 'right' : 'wrong', flagEmoji(targetIso2));
+
     if (tappedIso2 === targetIso2) {
       map.mark(targetIso2, 'correct');
       flow.answerCorrect({ fact: content.countries[targetIso2].fact });
