@@ -1,7 +1,8 @@
 // Registry aller Spielmodi und Level.
 // Ein neuer Modus = neue Datei in js/modes/ + ein Eintrag hier.
-// Ein neues Level (z. B. „Welt – schwer") = nur ein neuer Eintrag in LEVELS,
-// mit eigenem Kartendatensatz und eigenem Fragen-Pool im Inhaltspaket.
+// Ein neues Level = ein Eintrag in LEVELS; der Titel kommt aus den
+// Sprachdateien (ui.json, Schlüssel "level.<id>"), der Fragen-Pool
+// aus data/pools.json.
 
 import { createGame as locateCountry } from './locate-country.js';
 import { createGame as flagQuiz } from './flag-quiz.js';
@@ -16,21 +17,17 @@ export const MODES = {
 export const LEVELS = [
   {
     id: 'europa-leicht',
-    title: '🗺️ Europa – Leicht',
     mode: 'locate-country',
     map: 'data/europe-map.json',
-    content: 'data/countries-de.json',
     pool: 'easy',
     locked: false,
   },
   {
     id: 'flaggen-quiz',
-    title: '🚩 Flaggen-Quiz',
-    mode: 'flag-quiz',
-    content: 'data/countries-de.json', // keine Karte nötig
+    mode: 'flag-quiz', // keine Karte nötig
     pool: 'easy',
     locked: false,
   },
-  { id: 'welt-schwer', title: '🌍 Ganze Welt', locked: true },
-  { id: 'hauptstaedte', title: '🏛️ Hauptstädte', locked: true },
+  { id: 'welt-schwer', locked: true },
+  { id: 'hauptstaedte', locked: true },
 ];

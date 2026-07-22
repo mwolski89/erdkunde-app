@@ -13,10 +13,13 @@
   <!-- Startbildschirm -->
   <section id="screen-start" class="screen">
     <div class="start-card">
-      <h1 class="logo"><span class="logo-globe">🌍</span><br>Erdkunde-Abenteuer</h1>
-      <p class="tagline">Findest du alle Länder?</p>
+      <h1 class="logo"><span class="logo-globe">🌍</span><br><span id="app-title">Erdkunde-Abenteuer</span></h1>
+      <p id="tagline" class="tagline">Findest du alle Länder?</p>
       <div id="menu" class="menu"></div>
-      <button id="speech-toggle" type="button" class="btn-toggle hidden"></button>
+      <div class="start-options">
+        <button id="speech-toggle" type="button" class="btn-toggle hidden"></button>
+        <select id="lang-picker" class="btn-toggle lang-picker" aria-label="Sprache"></select>
+      </div>
       <p id="best-score" class="best"></p>
     </div>
   </section>

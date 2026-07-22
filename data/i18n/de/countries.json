@@ -1,0 +1,181 @@
+{
+  "AL": {
+    "name": "Albanien"
+  },
+  "AD": {
+    "name": "Andorra"
+  },
+  "AM": {
+    "name": "Armenien"
+  },
+  "AT": {
+    "name": "Österreich",
+    "fact": "In Österreich kann man fast überall Berge sehen – die Alpen bedecken mehr als die Hälfte des Landes."
+  },
+  "AZ": {
+    "name": "Aserbaidschan"
+  },
+  "BY": {
+    "name": "Belarus"
+  },
+  "BE": {
+    "name": "Belgien",
+    "fact": "In Belgien gibt es über 1.000 Sorten Schokolade – und die berühmten Pommes kommen auch von hier!"
+  },
+  "BA": {
+    "name": "Bosnien und Herzegowina"
+  },
+  "BG": {
+    "name": "Bulgarien"
+  },
+  "HR": {
+    "name": "Kroatien",
+    "fact": "Kroatien hat mehr als 1.000 Inseln im blauen Mittelmeer."
+  },
+  "CY": {
+    "name": "Zypern"
+  },
+  "CZ": {
+    "name": "Tschechien",
+    "fact": "In Tschechien steht die Prager Burg – sie gehört zu den größten Burgen der ganzen Welt."
+  },
+  "DK": {
+    "name": "Dänemark",
+    "fact": "In Dänemark wurden die LEGO-Steine erfunden!"
+  },
+  "EE": {
+    "name": "Estland"
+  },
+  "FO": {
+    "name": "die Färöer-Inseln",
+    "von": "den Färöer-Inseln",
+    "plural": true
+  },
+  "FI": {
+    "name": "Finnland",
+    "fact": "Finnland ist das Land der Saunen: Es gibt dort mehr Saunen als Autos."
+  },
+  "FR": {
+    "name": "Frankreich",
+    "fact": "In Frankreich steht der Eiffelturm – er ist so hoch wie 100 Giraffen übereinander!"
+  },
+  "GE": {
+    "name": "Georgien"
+  },
+  "DE": {
+    "name": "Deutschland",
+    "fact": "In Deutschland leben über 83 Millionen Menschen – mehr als in jedem anderen Land der EU."
+  },
+  "GR": {
+    "name": "Griechenland",
+    "fact": "In Griechenland wurden vor fast 3.000 Jahren die Olympischen Spiele erfunden."
+  },
+  "HU": {
+    "name": "Ungarn",
+    "fact": "In Ungarn liegt der Plattensee – er ist so groß, dass man ihn das 'ungarische Meer' nennt."
+  },
+  "IS": {
+    "name": "Island",
+    "fact": "Auf Island gibt es über 30 aktive Vulkane und heiße Quellen, in denen man baden kann."
+  },
+  "IE": {
+    "name": "Irland",
+    "fact": "Irland heißt die 'Grüne Insel', weil dort fast überall saftig grüne Wiesen wachsen."
+  },
+  "IL": {
+    "name": "Israel"
+  },
+  "IT": {
+    "name": "Italien",
+    "fact": "Italien sieht auf der Karte aus wie ein Stiefel – und die Pizza wurde hier erfunden."
+  },
+  "LV": {
+    "name": "Lettland"
+  },
+  "LI": {
+    "name": "Liechtenstein"
+  },
+  "LT": {
+    "name": "Litauen"
+  },
+  "LU": {
+    "name": "Luxemburg"
+  },
+  "MT": {
+    "name": "Malta"
+  },
+  "MD": {
+    "name": "Moldau"
+  },
+  "ME": {
+    "name": "Montenegro"
+  },
+  "NL": {
+    "name": "die Niederlande",
+    "von": "den Niederlanden",
+    "plural": true,
+    "fact": "Die Niederlande sind so flach, dass ein großer Teil des Landes tiefer liegt als das Meer."
+  },
+  "NO": {
+    "name": "Norwegen",
+    "fact": "Norwegen hat so viele Fjorde und Inseln, dass seine Küste unglaublich lang ist – über 100.000 Kilometer!"
+  },
+  "PL": {
+    "name": "Polen",
+    "fact": "In Polen leben noch wilde Wisente – die größten Landtiere Europas."
+  },
+  "PT": {
+    "name": "Portugal",
+    "fact": "Portugal liegt ganz im Westen Europas – von hier segelten früher berühmte Entdecker los."
+  },
+  "RO": {
+    "name": "Rumänien",
+    "fact": "In Rumänien steht das Schloss von Graf Dracula – mitten in den Karpaten-Bergen."
+  },
+  "RU": {
+    "name": "Russland"
+  },
+  "SM": {
+    "name": "San Marino"
+  },
+  "RS": {
+    "name": "Serbien"
+  },
+  "SK": {
+    "name": "die Slowakei",
+    "von": "der Slowakei"
+  },
+  "SI": {
+    "name": "Slowenien"
+  },
+  "ES": {
+    "name": "Spanien",
+    "fact": "In Spanien gibt es einmal im Jahr eine riesige Tomatenschlacht – tausende Menschen bewerfen sich mit Tomaten!"
+  },
+  "SE": {
+    "name": "Schweden",
+    "fact": "In Schweden gibt es fast 100.000 Seen – zum Zählen bräuchtest du viele Tage!"
+  },
+  "CH": {
+    "name": "die Schweiz",
+    "von": "der Schweiz",
+    "fact": "Die Schweiz hat über 40 Berge, die höher als 4.000 Meter sind."
+  },
+  "MK": {
+    "name": "Nordmazedonien"
+  },
+  "TR": {
+    "name": "die Türkei",
+    "von": "der Türkei",
+    "fact": "Die Türkei liegt auf zwei Kontinenten gleichzeitig: Europa und Asien."
+  },
+  "UA": {
+    "name": "die Ukraine",
+    "von": "der Ukraine",
+    "fact": "Die Ukraine ist das größte Land, das ganz in Europa liegt."
+  },
+  "GB": {
+    "name": "Großbritannien",
+    "fact": "In Großbritannien fahren die Autos auf der linken Straßenseite."
+  }
+}

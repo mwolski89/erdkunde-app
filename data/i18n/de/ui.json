@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "label": "Deutsch",
+    "speechLang": "de-DE",
+    "requiredForms": []
+  },
+  "app": {
+    "title": "Erdkunde-Abenteuer",
+    "tagline": "Findest du alle Länder?",
+    "records": "Deine Rekorde:",
+    "loadError": "Ohje, das Spiel konnte nicht laden. Bitte Seite neu laden."
+  },
+  "speech": {
+    "on": "🔊 Vorlesen: AN",
+    "off": "🔇 Vorlesen: AUS",
+    "hello": "Hallo! Ich lese dir jetzt alles vor."
+  },
+  "level": {
+    "europa-leicht": "🗺️ Europa – Leicht",
+    "flaggen-quiz": "🚩 Flaggen-Quiz",
+    "welt-schwer": "🌍 Ganze Welt",
+    "hauptstaedte": "🏛️ Hauptstädte"
+  },
+  "game": {
+    "whereIs": "Wo ist {country}?",
+    "whereIsPlural": "Wo sind {country}?",
+    "whichFlag": "Welche Flagge hat {country}?",
+    "whichFlagPlural": "Welche Flagge haben {country}?",
+    "next": "Weiter ▶",
+    "combo": "🔥 {n}er-Serie!",
+    "correct": "Richtig!",
+    "correctStreak": "Super, {n} richtige hintereinander!",
+    "points": "+{points} Punkte 🎉",
+    "pointsSpeech": "Du bekommst {points} Punkte.",
+    "wrongMap": "Ups! {hint}{country|cap} leuchtet hier! 💡",
+    "wrongMapPlural": "Ups! {hint}{country|cap} leuchten hier! 💡",
+    "wrongMapHint": "Das war {country}. ",
+    "wrongMapHintPlural": "Das waren {country}. ",
+    "wrongMapSpeech": "Ups! {hint}Schau, hier leuchtet {country}.",
+    "wrongMapSpeechPlural": "Ups! {hint}Schau, hier leuchten {country}.",
+    "wrongFlag": "Ups! Das war die Flagge von {chosen.von}. Die richtige leuchtet! 💡",
+    "wrongFlagSpeech": "Ups! Das war die Flagge von {chosen.von}. Schau, die Flagge von {country.von} leuchtet."
+  },
+  "end": {
+    "wonTitle": "Geschafft!",
+    "wonMessage": "Du hast {n} von {total} Fragen richtig beantwortet!",
+    "lostTitle": "Fast geschafft!",
+    "lostMessage": "Drei Herzen weg – aber deine Punkte zählen! Versuch es gleich nochmal.",
+    "points": "{points} Punkte",
+    "newRecord": "🎊 Neuer Rekord!",
+    "best": "Rekord: {points} Punkte",
+    "retry": "🔄 Nochmal spielen",
+    "menu": "🏠 Zum Menü"
+  }
+}

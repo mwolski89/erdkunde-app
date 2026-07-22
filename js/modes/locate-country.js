@@ -4,15 +4,16 @@
 //   createGame(ctx) -> { start(), stop() }
 // und meldet sich über ctx.onFinished(session) zurück, wenn die Runde vorbei
 // ist. Der gemeinsame Rundenablauf (Punkte, HUD, Feedback, Vorlesen) kommt
-// aus shared.js; hier steckt nur die Karten-Logik.
+// aus shared.js, alle Texte aus den Sprachdateien (core/i18n.js).
 
 import { EuropeMap } from '../map/europe-map.js';
-import { createFlow, flagEmoji, shuffle, capitalize } from './shared.js';
+import { createFlow, flagEmoji, shuffle } from './shared.js';
+import { tp, countryName, countryFact, isPlural } from '../core/i18n.js';
 
-export function createGame({ level, mapData, content, elements: el, onFinished }) {
+export function createGame({ level, mapData, pools, elements: el, onFinished }) {
   const flow = createFlow({ elements: el, onQuestion: showQuestion, onFinished });
   const { session } = flow;
-  const questions = shuffle(content.pools[level.pool]).slice(0, session.questionCount);
+  const questions = shuffle(pools[level.pool]).slice(0, session.questionCount);
 
   el.mapContainer.classList.remove('flag-area');
   el.mapContainer.replaceChildren();
@@ -23,7 +24,10 @@ export function createGame({ level, mapData, content, elements: el, onFinished }
     map.clearMarks();
     map.resetView();
     map.setEnabled(true);
-    flow.askQuestion(`Wo ist ${content.countries[iso2].name}?`, flagEmoji(iso2));
+    flow.askQuestion(
+      tp('game.whereIs', isPlural(iso2), { country: iso2 }),
+      flagEmoji(iso2),
+    );
   }
 
   map.onTap = (tappedIso2) => {
@@ -35,16 +39,18 @@ export function createGame({ level, mapData, content, elements: el, onFinished }
 
     if (tappedIso2 === targetIso2) {
       map.mark(targetIso2, 'correct');
-      flow.answerCorrect({ fact: content.countries[targetIso2].fact });
+      flow.answerCorrect({ fact: countryFact(targetIso2) });
     } else {
       map.mark(tappedIso2, 'wrong');
       map.mark(targetIso2, 'reveal');
       map.zoomToCountry(targetIso2, 30);
-      const tappedName = content.countries[tappedIso2]?.name;
-      const hint = tappedName ? `Das war ${tappedName}. ` : '';
+      // Hinweis nur, wenn das angetippte Land einen Namen hat
+      const hint = countryName(tappedIso2) !== tappedIso2
+        ? tp('game.wrongMapHint', isPlural(tappedIso2), { country: tappedIso2 })
+        : '';
       flow.answerWrong({
-        title: `Ups! ${hint}${capitalize(content.countries[targetIso2].name)} leuchtet hier! 💡`,
-        speech: `Ups! ${hint}Schau, hier leuchtet ${content.countries[targetIso2].name}.`,
+        title: tp('game.wrongMap', isPlural(targetIso2), { hint, country: targetIso2 }),
+        speech: tp('game.wrongMapSpeech', isPlural(targetIso2), { hint, country: targetIso2 }),
       });
     }
   };

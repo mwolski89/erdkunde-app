@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "label": "Русский",
+    "speechLang": "ru-RU",
+    "requiredForms": [
+      "gen"
+    ]
+  },
+  "app": {
+    "title": "Гео-приключение",
+    "tagline": "Найдёшь все страны?",
+    "records": "Твои рекорды:",
+    "loadError": "Ой, игра не загрузилась. Обнови страницу."
+  },
+  "speech": {
+    "on": "🔊 Озвучка: ВКЛ",
+    "off": "🔇 Озвучка: ВЫКЛ",
+    "hello": "Привет! Я буду всё читать вслух."
+  },
+  "level": {
+    "europa-leicht": "🗺️ Европа – легко",
+    "flaggen-quiz": "🚩 Викторина флагов",
+    "welt-schwer": "🌍 Весь мир",
+    "hauptstaedte": "🏛️ Столицы"
+  },
+  "game": {
+    "whereIs": "Где находится {country}?",
+    "whereIsPlural": "Где находятся {country}?",
+    "whichFlag": "Какой флаг у {country.gen}?",
+    "next": "Дальше ▶",
+    "combo": "🔥 Серия: {n}!",
+    "correct": "Правильно!",
+    "correctStreak": "Супер, {n} подряд!",
+    "points": "+{points} очков 🎉",
+    "pointsSpeech": "Ты получаешь {points} очков.",
+    "wrongMap": "Ой! {hint}Правильный ответ — {country|cap}! 💡",
+    "wrongMapHint": "Это {country}. ",
+    "wrongMapSpeech": "Ой! {hint}Смотри, на карте светится правильный ответ: {country}.",
+    "wrongFlag": "Ой! Это был флаг {chosen.gen}. Правильный светится! 💡",
+    "wrongFlagSpeech": "Ой! Это был флаг {chosen.gen}. Смотри, светится флаг {country.gen}."
+  },
+  "end": {
+    "wonTitle": "Получилось!",
+    "wonMessage": "У тебя {n} правильных ответов из {total}!",
+    "lostTitle": "Почти!",
+    "lostMessage": "Три сердечка потеряны – но очки считаются! Попробуй ещё раз.",
+    "points": "{points} очков",
+    "newRecord": "🎊 Новый рекорд!",
+    "best": "Рекорд: {points} очков",
+    "retry": "🔄 Играть ещё раз",
+    "menu": "🏠 В меню"
+  }
+}

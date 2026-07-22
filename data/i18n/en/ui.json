@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "label": "English",
+    "speechLang": "en-GB",
+    "requiredForms": []
+  },
+  "app": {
+    "title": "Geo Adventure",
+    "tagline": "Can you find all the countries?",
+    "records": "Your records:",
+    "loadError": "Oh no, the game could not load. Please reload the page."
+  },
+  "speech": {
+    "on": "🔊 Read aloud: ON",
+    "off": "🔇 Read aloud: OFF",
+    "hello": "Hello! I will read everything to you."
+  },
+  "level": {
+    "europa-leicht": "🗺️ Europe – Easy",
+    "flaggen-quiz": "🚩 Flag Quiz",
+    "welt-schwer": "🌍 Whole World",
+    "hauptstaedte": "🏛️ Capitals"
+  },
+  "game": {
+    "whereIs": "Where is {country}?",
+    "whereIsPlural": "Where are {country}?",
+    "whichFlag": "Which flag belongs to {country}?",
+    "next": "Next ▶",
+    "combo": "🔥 {n} in a row!",
+    "correct": "Correct!",
+    "correctStreak": "Wow, {n} right in a row!",
+    "points": "+{points} points 🎉",
+    "pointsSpeech": "You get {points} points.",
+    "wrongMap": "Oops! {hint}{country|cap} is glowing here! 💡",
+    "wrongMapPlural": "Oops! {hint}{country|cap} are glowing here! 💡",
+    "wrongMapHint": "That was {country}. ",
+    "wrongMapHintPlural": "Those were {country}. ",
+    "wrongMapSpeech": "Oops! {hint}Look, {country} is glowing here.",
+    "wrongMapSpeechPlural": "Oops! {hint}Look, {country} are glowing here.",
+    "wrongFlag": "Oops! That was the flag of {chosen}. The right one is glowing! 💡",
+    "wrongFlagSpeech": "Oops! That was the flag of {chosen}. Look, the flag of {country} is glowing."
+  },
+  "end": {
+    "wonTitle": "You did it!",
+    "wonMessage": "You answered {n} of {total} questions correctly!",
+    "lostTitle": "Almost!",
+    "lostMessage": "Three hearts gone – but your points still count! Try again right away.",
+    "points": "{points} points",
+    "newRecord": "🎊 New record!",
+    "best": "Record: {points} points",
+    "retry": "🔄 Play again",
+    "menu": "🏠 Menu"
+  }
+}

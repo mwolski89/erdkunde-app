@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "label": "Polski",
+    "speechLang": "pl-PL",
+    "requiredForms": [
+      "gen"
+    ]
+  },
+  "app": {
+    "title": "Geoprzygoda",
+    "tagline": "Znajdziesz wszystkie kraje?",
+    "records": "Twoje rekordy:",
+    "loadError": "Ojej, gra się nie wczytała. Odśwież stronę."
+  },
+  "speech": {
+    "on": "🔊 Czytanie: WŁ",
+    "off": "🔇 Czytanie: WYŁ",
+    "hello": "Cześć! Będę ci wszystko czytać."
+  },
+  "level": {
+    "europa-leicht": "🗺️ Europa – łatwy",
+    "flaggen-quiz": "🚩 Quiz z flagami",
+    "welt-schwer": "🌍 Cały świat",
+    "hauptstaedte": "🏛️ Stolice"
+  },
+  "game": {
+    "whereIs": "Gdzie jest {country}?",
+    "whereIsPlural": "Gdzie są {country}?",
+    "whichFlag": "Jaką flagę ma {country}?",
+    "whichFlagPlural": "Jaką flagę mają {country}?",
+    "next": "Dalej ▶",
+    "combo": "🔥 Seria: {n}!",
+    "correct": "Dobrze!",
+    "correctStreak": "Super, {n} dobrych odpowiedzi z rzędu!",
+    "points": "+{points} punktów 🎉",
+    "pointsSpeech": "Dostajesz {points} punktów.",
+    "wrongMap": "Ojej! {hint}Prawidłowa odpowiedź to {country|cap}! 💡",
+    "wrongMapHint": "To jest {country}. ",
+    "wrongMapHintPlural": "To są {country}. ",
+    "wrongMapSpeech": "Ojej! {hint}Zobacz, na mapie świeci się prawidłowa odpowiedź: {country}.",
+    "wrongFlag": "Ojej! To była flaga {chosen.gen}. Prawidłowa się świeci! 💡",
+    "wrongFlagSpeech": "Ojej! To była flaga {chosen.gen}. Zobacz, świeci się flaga {country.gen}."
+  },
+  "end": {
+    "wonTitle": "Udało się!",
+    "wonMessage": "Masz {n} dobrych odpowiedzi na {total} pytań!",
+    "lostTitle": "Prawie!",
+    "lostMessage": "Trzy serca stracone – ale punkty się liczą! Spróbuj jeszcze raz.",
+    "points": "{points} punktów",
+    "newRecord": "🎊 Nowy rekord!",
+    "best": "Rekord: {points} punktów",
+    "retry": "🔄 Zagraj jeszcze raz",
+    "menu": "🏠 Menu"
+  }
+}

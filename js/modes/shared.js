@@ -9,6 +9,7 @@
 import { GameSession } from '../core/session.js';
 import { sounds } from '../core/audio.js';
 import { speak, autoSpeak, stop as stopSpeech } from '../core/speech.js';
+import { t } from '../core/i18n.js';
 
 const NEXT_DELAY_MS = 5000; // automatisch weiter, falls das Kind nicht tippt
 
@@ -23,11 +24,6 @@ export function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-// Ländername am Satzanfang großschreiben („die Schweiz" -> „Die Schweiz")
-export function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 export function createFlow({ elements: el, onQuestion, onFinished }) {
@@ -49,7 +45,7 @@ export function createFlow({ elements: el, onQuestion, onFinished }) {
     el.lives.textContent = '❤️'.repeat(session.livesLeft) + '🖤'.repeat(3 - session.livesLeft);
     el.score.textContent = `⭐ ${session.score}`;
     if (session.combo >= 2) {
-      el.combo.textContent = `🔥 ${session.combo}er-Serie!`;
+      el.combo.textContent = t('game.combo', { n: session.combo });
       el.combo.classList.remove('hidden');
     } else {
       el.combo.classList.add('hidden');
@@ -79,9 +75,9 @@ export function createFlow({ elements: el, onQuestion, onFinished }) {
   function answerCorrect({ fact } = {}) {
     const points = session.answerCorrect();
     sounds.correct();
-    const cheer = session.combo >= 3 ? `Super, ${session.combo} richtige hintereinander!` : 'Richtig!';
-    showFeedback('good', `${cheer} +${points} Punkte 🎉`, fact,
-      `${cheer} Du bekommst ${points} Punkte. ${fact || ''}`);
+    const cheer = session.combo >= 3 ? t('game.correctStreak', { n: session.combo }) : t('game.correct');
+    showFeedback('good', `${cheer} ${t('game.points', { points })}`, fact,
+      `${cheer} ${t('game.pointsSpeech', { points })} ${fact || ''}`);
   }
 
   function answerWrong({ title, speech }) {

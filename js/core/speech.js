@@ -1,9 +1,12 @@
 // Vorlesefunktion über die Web Speech API (Systemstimmen, offline-fähig).
-// Für Leseanfänger: Fragen und Fakten werden mit einer deutschen Stimme
-// in etwas gemächlicherem Tempo vorgelesen.
+// Für Leseanfänger: Fragen und Fakten werden in der Spielsprache und in
+// etwas gemächlicherem Tempo vorgelesen; die Stimme kommt aus i18n
+// (meta.speechLang der gewählten Sprache).
 //
 // iOS-Besonderheit: Die erste Sprachausgabe braucht eine Nutzeraktion,
 // deshalb ruft main.js warmup() beim Start-Tap auf.
+
+import { speechLang } from './i18n.js';
 
 const PREF_KEY = 'erdkunde.speech';
 
@@ -18,21 +21,24 @@ try {
 
 let voice = null;
 let voiceStale = true;
+let voiceLang = null;
 
 if (isSupported && typeof speechSynthesis.addEventListener === 'function') {
   // Stimmen werden asynchron geladen – bei Änderung neu auswählen
   speechSynthesis.addEventListener('voiceschanged', () => { voiceStale = true; });
 }
 
-function pickVoice() {
-  if (!voiceStale) return voice;
-  const german = speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith('de'));
+function pickVoice(wantedLang) {
+  if (!voiceStale && voiceLang === wantedLang) return voice;
+  const prefix = wantedLang.slice(0, 2).toLowerCase();
+  const matching = speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith(prefix));
   voice =
-    german.find((v) => v.default) ||
-    german.find((v) => v.localService) ||
-    german[0] ||
+    matching.find((v) => v.default) ||
+    matching.find((v) => v.localService) ||
+    matching[0] ||
     null;
   voiceStale = false;
+  voiceLang = wantedLang;
   return voice;
 }
 
@@ -70,10 +76,10 @@ export function speak(text) {
 
   stop();
   const utterance = new SpeechSynthesisUtterance(clean);
-  utterance.lang = 'de-DE';
+  utterance.lang = speechLang(); // Sprache des Spiels, z. B. 'pl-PL'
   utterance.rate = 0.9;   // etwas langsamer für Kinder
   utterance.pitch = 1.05; // eine Spur freundlicher
-  const v = pickVoice();
+  const v = pickVoice(utterance.lang);
   if (v) utterance.voice = v;
 
   return new Promise((resolve) => {

@@ -1,10 +1,11 @@
-// Einstiegspunkt: Bildschirmwechsel (Start -> Spiel -> Ergebnis) und
-// Verdrahtung von Level, Modus, Daten und HUD.
+// Einstiegspunkt: Sprache laden, Bildschirmwechsel (Start -> Spiel ->
+// Ergebnis) und Verdrahtung von Level, Modus, Daten und HUD.
 
 import { MODES, LEVELS } from './modes/registry.js';
 import { loadBestScore, saveBestScore } from './core/storage.js';
 import { unlock as unlockAudio, sounds } from './core/audio.js';
 import * as speech from './core/speech.js';
+import { initI18n, setLanguage, currentLang, t, LANGUAGES } from './core/i18n.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -35,16 +36,16 @@ let currentLevel = null;
 
 async function startLevel(level) {
   currentLevel = level;
-  const [mapData, content] = await Promise.all([
+  const [mapData, pools] = await Promise.all([
     level.map ? loadJson(level.map) : null, // nicht jeder Modus braucht eine Karte
-    loadJson(level.content),
+    loadJson('data/pools.json'),
   ]);
 
   currentGame?.stop?.();
   currentGame = MODES[level.mode]({
     level,
     mapData,
-    content,
+    pools,
     elements: {
       mapContainer: $('map-container'),
       progress: $('hud-progress'),
@@ -73,20 +74,31 @@ function showResult(session) {
 
   if (session.failed) {
     $('end-emoji').textContent = '💪';
-    $('end-title').textContent = 'Fast geschafft!';
-    $('end-message').textContent = 'Drei Herzen weg – aber deine Punkte zählen! Versuch es gleich nochmal.';
+    $('end-title').textContent = t('end.lostTitle');
+    $('end-message').textContent = t('end.lostMessage');
   } else {
     sounds.fanfare();
     $('end-emoji').textContent = session.correctCount >= 13 ? '🏆' : '🎉';
-    $('end-title').textContent = 'Geschafft!';
-    $('end-message').textContent = `Du hast ${session.correctCount} von ${session.questionCount} Ländern gefunden!`;
+    $('end-title').textContent = t('end.wonTitle');
+    $('end-message').textContent = t('end.wonMessage', { n: session.correctCount, total: session.questionCount });
   }
 
   const stars = session.correctCount >= 13 ? 3 : session.correctCount >= 9 ? 2 : session.correctCount >= 5 ? 1 : 0;
   $('end-stars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-  $('end-score').textContent = `${session.score} Punkte`;
-  $('end-best').textContent = isRecord ? '🎊 Neuer Rekord!' : `Rekord: ${best} Punkte`;
+  $('end-score').textContent = t('end.points', { points: session.score });
+  $('end-best').textContent = isRecord ? t('end.newRecord') : t('end.best', { points: best });
   showScreen('end');
+}
+
+// Statische Texte (alles außerhalb einer laufenden Runde) neu setzen –
+// wird beim Start und nach jedem Sprachwechsel aufgerufen.
+function applyStaticTexts() {
+  document.title = `${t('app.title')} 🌍`;
+  $('app-title').textContent = t('app.title');
+  $('tagline').textContent = t('app.tagline');
+  $('feedback-next').textContent = t('game.next');
+  $('end-retry').textContent = t('end.retry');
+  $('end-menu').textContent = t('end.menu');
 }
 
 function renderMenu() {
@@ -96,7 +108,8 @@ function renderMenu() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'btn btn-big' + (level.locked ? ' btn-locked' : '');
-    btn.textContent = level.locked ? `${level.title} 🔒` : level.title;
+    const title = t(`level.${level.id}`);
+    btn.textContent = level.locked ? `${title} 🔒` : title;
     btn.disabled = level.locked;
     if (!level.locked) {
       btn.addEventListener('click', () => {
@@ -104,26 +117,44 @@ function renderMenu() {
         speech.warmup(); // dito für die Vorlesestimme
         startLevel(level).catch((err) => {
           console.error(err);
-          alert('Ohje, das Spiel konnte nicht laden. Bitte Seite neu laden.');
+          alert(t('app.loadError'));
         });
       });
     }
     menu.appendChild(btn);
   }
 
-  // Rekorde aller freigeschalteten Level (Emoji des Leveltitels + Punkte)
+  // Rekorde aller freigeschalteten Level (Emoji des Leveltitels + Punkte);
+  // Rekorde sind bewusst sprachunabhängig (ein Highscore pro Level)
   const records = LEVELS.filter((l) => !l.locked)
-    .map((l) => ({ icon: l.title.split(' ')[0], best: loadBestScore(l.id) }))
+    .map((l) => ({ icon: t(`level.${l.id}`).split(' ')[0], best: loadBestScore(l.id) }))
     .filter((r) => r.best > 0);
   $('best-score').textContent = records.length
-    ? 'Deine Rekorde: ' + records.map((r) => `${r.icon} ${r.best}`).join('   ')
+    ? `${t('app.records')} ` + records.map((r) => `${r.icon} ${r.best}`).join('   ')
     : '';
+}
+
+// Sprachumschalter: Eigennamen der Sprachen, bewusst keine Flaggen
+function renderLangPicker() {
+  const picker = $('lang-picker');
+  picker.replaceChildren();
+  for (const { code, label } of LANGUAGES) {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = label;
+    picker.appendChild(opt);
+  }
+  picker.value = currentLang();
+  picker.addEventListener('change', async () => {
+    await setLanguage(picker.value);
+    applyStaticTexts();
+    renderMenu();
+    updateSpeechUi();
+  });
 }
 
 // Vorlesen an/aus – ein gemeinsamer Zustand für den Schalter im
 // Startbildschirm und den 🔊/🔇-Knopf in der Spiel-Kopfleiste.
-// Ausgeschaltet heißt komplett aus: laufende Ausgabe stoppt,
-// alle Vorlese-Knöpfe werden ausgeblendet.
 function updateSpeechUi() {
   document.body.classList.toggle('no-speech', !speech.isSupported);
   if (!speech.isSupported) return;
@@ -131,7 +162,7 @@ function updateSpeechUi() {
   document.body.classList.toggle('speech-off', !on);
   const toggle = $('speech-toggle');
   toggle.classList.remove('hidden');
-  toggle.textContent = on ? '🔊 Vorlesen: AN' : '🔇 Vorlesen: AUS';
+  toggle.textContent = on ? t('speech.on') : t('speech.off');
   const mute = $('hud-mute');
   mute.textContent = on ? '🔊' : '🔇';
   mute.classList.toggle('off', !on);
@@ -140,7 +171,7 @@ function updateSpeechUi() {
 function toggleSpeech({ announce = false } = {}) {
   speech.setEnabled(!speech.isEnabled()); // schaltet aus + stoppt laufende Ausgabe
   updateSpeechUi();
-  if (announce && speech.isEnabled()) speech.speak('Hallo! Ich lese dir jetzt alles vor.');
+  if (announce && speech.isEnabled()) speech.speak(t('speech.hello'));
 }
 
 $('speech-toggle').addEventListener('click', () => toggleSpeech({ announce: true }));
@@ -152,6 +183,15 @@ $('end-menu').addEventListener('click', () => {
   showScreen('start');
 });
 
-renderMenu();
-updateSpeechUi();
-showScreen('start');
+initI18n()
+  .then(() => {
+    applyStaticTexts();
+    renderMenu();
+    renderLangPicker();
+    updateSpeechUi();
+    showScreen('start');
+  })
+  .catch((err) => {
+    console.error(err);
+    alert('Ohje, das Spiel konnte nicht laden. Bitte Seite neu laden.');
+  });

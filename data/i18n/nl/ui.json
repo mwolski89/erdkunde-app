@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "label": "Nederlands",
+    "speechLang": "nl-NL",
+    "requiredForms": []
+  },
+  "app": {
+    "title": "Geo-avontuur",
+    "tagline": "Kun jij alle landen vinden?",
+    "records": "Jouw records:",
+    "loadError": "Oeps, het spel kon niet laden. Herlaad de pagina."
+  },
+  "speech": {
+    "on": "🔊 Voorlezen: AAN",
+    "off": "🔇 Voorlezen: UIT",
+    "hello": "Hallo! Ik lees nu alles voor."
+  },
+  "level": {
+    "europa-leicht": "🗺️ Europa – Makkelijk",
+    "flaggen-quiz": "🚩 Vlaggenquiz",
+    "welt-schwer": "🌍 Hele wereld",
+    "hauptstaedte": "🏛️ Hoofdsteden"
+  },
+  "game": {
+    "whereIs": "Waar ligt {country}?",
+    "whereIsPlural": "Waar liggen {country}?",
+    "whichFlag": "Welke vlag heeft {country}?",
+    "whichFlagPlural": "Welke vlag hebben {country}?",
+    "next": "Verder ▶",
+    "combo": "🔥 {n} op rij!",
+    "correct": "Goed zo!",
+    "correctStreak": "Super, {n} goed op rij!",
+    "points": "+{points} punten 🎉",
+    "pointsSpeech": "Je krijgt {points} punten.",
+    "wrongMap": "Oeps! {hint}{country|cap} licht hier op! 💡",
+    "wrongMapPlural": "Oeps! {hint}{country|cap} lichten hier op! 💡",
+    "wrongMapHint": "Dat was {country}. ",
+    "wrongMapHintPlural": "Dat waren {country}. ",
+    "wrongMapSpeech": "Oeps! {hint}Kijk, hier licht {country} op.",
+    "wrongMapSpeechPlural": "Oeps! {hint}Kijk, hier lichten {country} op.",
+    "wrongFlag": "Oeps! Dat was de vlag van {chosen}. De juiste licht op! 💡",
+    "wrongFlagSpeech": "Oeps! Dat was de vlag van {chosen}. Kijk, de vlag van {country} licht op."
+  },
+  "end": {
+    "wonTitle": "Gelukt!",
+    "wonMessage": "Je hebt {n} van de {total} vragen goed beantwoord!",
+    "lostTitle": "Bijna!",
+    "lostMessage": "Drie hartjes weg – maar je punten tellen! Probeer het meteen nog een keer.",
+    "points": "{points} punten",
+    "newRecord": "🎊 Nieuw record!",
+    "best": "Record: {points} punten",
+    "retry": "🔄 Nog een keer",
+    "menu": "🏠 Naar het menu"
+  }
+}

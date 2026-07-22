@@ -5,14 +5,15 @@
 // können keine Flaggen doppelt auftauchen. Punkte, Leben und Kombo sind
 // identisch zum Karten-Modus (gemeinsame GameSession über shared.js).
 
-import { createFlow, flagEmoji, shuffle, capitalize } from './shared.js';
+import { createFlow, flagEmoji, shuffle } from './shared.js';
+import { t, tp, cap, countryName, countryFact, isPlural } from '../core/i18n.js';
 
 const OPTION_COUNT = 4;
 
-export function createGame({ level, content, elements: el, onFinished }) {
+export function createGame({ level, pools, elements: el, onFinished }) {
   const flow = createFlow({ elements: el, onQuestion: showQuestion, onFinished });
   const { session } = flow;
-  const pool = content.pools[level.pool];
+  const pool = pools[level.pool];
   const questions = shuffle(pool).slice(0, session.questionCount);
 
   el.mapContainer.classList.add('flag-area');
@@ -20,18 +21,6 @@ export function createGame({ level, content, elements: el, onFinished }) {
   const grid = document.createElement('div');
   grid.className = 'flag-grid';
   el.mapContainer.appendChild(grid);
-
-  // "die Niederlande" ist Plural („haben"), alles andere Singular („hat")
-  function questionFor(iso2) {
-    const c = content.countries[iso2];
-    return c.plural ? `Welche Flagge haben ${c.name}?` : `Welche Flagge hat ${c.name}?`;
-  }
-
-  // Für „die Flagge von …" braucht es den Dativ („von der Schweiz")
-  function dativName(iso2) {
-    const c = content.countries[iso2];
-    return c.dativ || c.name;
-  }
 
   function showQuestion() {
     const targetIso2 = questions[session.index];
@@ -44,7 +33,7 @@ export function createGame({ level, content, elements: el, onFinished }) {
       btn.type = 'button';
       btn.className = 'flag-option';
       btn.dataset.iso2 = iso2;
-      btn.setAttribute('aria-label', content.countries[iso2].name);
+      btn.setAttribute('aria-label', countryName(iso2));
       // Flagge + Ländername; der Name wird erst nach der Antwort sichtbar
       // (Lerneffekt: man sieht dann, welche Flagge zu welchem Land gehört)
       const flag = document.createElement('span');
@@ -52,13 +41,16 @@ export function createGame({ level, content, elements: el, onFinished }) {
       flag.textContent = flagEmoji(iso2);
       const name = document.createElement('span');
       name.className = 'flag-name';
-      name.textContent = capitalize(content.countries[iso2].name);
+      name.textContent = cap(countryName(iso2));
       btn.append(flag, name);
       btn.addEventListener('click', () => handleChoice(iso2, btn));
       grid.appendChild(btn);
     }
     grid.classList.remove('locked');
-    flow.askQuestion(questionFor(targetIso2), '❓');
+    flow.askQuestion(
+      tp('game.whichFlag', isPlural(targetIso2), { country: targetIso2 }),
+      '❓',
+    );
   }
 
   function handleChoice(chosenIso2, btn) {
@@ -68,13 +60,13 @@ export function createGame({ level, content, elements: el, onFinished }) {
 
     if (chosenIso2 === targetIso2) {
       btn.classList.add('correct');
-      flow.answerCorrect({ fact: content.countries[targetIso2].fact });
+      flow.answerCorrect({ fact: countryFact(targetIso2) });
     } else {
       btn.classList.add('wrong');
       grid.querySelector(`[data-iso2="${targetIso2}"]`)?.classList.add('reveal');
       flow.answerWrong({
-        title: `Ups! Das war die Flagge von ${dativName(chosenIso2)}. Die richtige leuchtet! 💡`,
-        speech: `Ups! Das war die Flagge von ${dativName(chosenIso2)}. Schau, die Flagge von ${dativName(targetIso2)} leuchtet.`,
+        title: t('game.wrongFlag', { chosen: chosenIso2, country: targetIso2 }),
+        speech: t('game.wrongFlagSpeech', { chosen: chosenIso2, country: targetIso2 }),
       });
     }
   }

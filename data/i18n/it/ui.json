@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "label": "Italiano",
+    "speechLang": "it-IT",
+    "requiredForms": [
+      "di"
+    ]
+  },
+  "app": {
+    "title": "Geo-avventura",
+    "tagline": "Riesci a trovare tutti i paesi?",
+    "records": "I tuoi record:",
+    "loadError": "Ohi, il gioco non si è caricato. Ricarica la pagina."
+  },
+  "speech": {
+    "on": "🔊 Lettura: SÌ",
+    "off": "🔇 Lettura: NO",
+    "hello": "Ciao! Adesso ti leggo tutto."
+  },
+  "level": {
+    "europa-leicht": "🗺️ Europa – Facile",
+    "flaggen-quiz": "🚩 Quiz delle bandiere",
+    "welt-schwer": "🌍 Tutto il mondo",
+    "hauptstaedte": "🏛️ Capitali"
+  },
+  "game": {
+    "whereIs": "Dov'è {country}?",
+    "whereIsPlural": "Dove sono {country}?",
+    "whichFlag": "Quale bandiera ha {country}?",
+    "whichFlagPlural": "Quale bandiera hanno {country}?",
+    "next": "Avanti ▶",
+    "combo": "🔥 {n} di fila!",
+    "correct": "Giusto!",
+    "correctStreak": "Super, {n} risposte giuste di fila!",
+    "points": "+{points} punti 🎉",
+    "pointsSpeech": "Ricevi {points} punti.",
+    "wrongMap": "Ops! {hint}Qui si illumina {country}! 💡",
+    "wrongMapPlural": "Ops! {hint}Qui si illuminano {country}! 💡",
+    "wrongMapHint": "Era {country}. ",
+    "wrongMapHintPlural": "Erano {country}. ",
+    "wrongMapSpeech": "Ops! {hint}Guarda, qui si illumina {country}.",
+    "wrongMapSpeechPlural": "Ops! {hint}Guarda, qui si illuminano {country}.",
+    "wrongFlag": "Ops! Quella era la bandiera {chosen.di}. Quella giusta si illumina! 💡",
+    "wrongFlagSpeech": "Ops! Quella era la bandiera {chosen.di}. Guarda, si illumina la bandiera {country.di}."
+  },
+  "end": {
+    "wonTitle": "Ce l'hai fatta!",
+    "wonMessage": "Hai risposto bene a {n} domande su {total}!",
+    "lostTitle": "Quasi!",
+    "lostMessage": "Tre cuori persi – ma i punti contano! Riprova subito.",
+    "points": "{points} punti",
+    "newRecord": "🎊 Nuovo record!",
+    "best": "Record: {points} punti",
+    "retry": "🔄 Gioca ancora",
+    "menu": "🏠 Menu"
+  }
+}

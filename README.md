@@ -45,8 +45,12 @@ js/
     locate-country.js Modus „Land auf der Karte finden"
     flag-quiz.js      Modus „Flaggen-Quiz" (4 Flaggen, eine richtig)
 data/
-  europe-map.json     vorberechnete SVG-Pfade der Ländergrenzen (~61 kB)
-  countries-de.json   Inhaltspaket: deutsche Namen, Fakten, Fragen-Pools
+  europe-map.json     vorberechnete SVG-Pfade der Ländergrenzen
+  pools.json          sprachneutral: welche Länder abgefragt werden
+  i18n/               eine Sprache = ein Ordner (siehe i18n/README.md)
+    de/ en/ pl/ it/ ru/ nl/
+      ui.json         Oberflächentexte + Satzschablonen
+      countries.json  Ländernamen, Grammatikformen, Fakten
 ```
 
 ### Die drei Erweiterungspunkte
@@ -59,9 +63,11 @@ data/
 2. **Neues Level / neue Region** (z. B. „Welt – schwer"): neuer Eintrag in
    `LEVELS` (registry.js) mit eigener Karten-JSON und eigenem Fragen-Pool.
    Neue Karten werden mit `tools/build_map.py` aus GeoJSON generiert.
-3. **Neue Inhalte** (mehr Länder, mehr Fakten, andere Sprachen): nur
-   `data/countries-de.json` erweitern bzw. ein `countries-en.json` daneben
-   legen – kein Code nötig.
+3. **Neue Inhalte und Sprachen**: Fakten/Namen in `data/i18n/<sprache>/`
+   pflegen; eine neue Sprache ist ein kopierter Ordner plus ein Eintrag in
+   `LANGUAGES` (js/core/i18n.js). Anleitung: `data/i18n/README.md`,
+   Qualitätsprüfung: `python3 tools/check_i18n.py`.
+   Konzept und Grammatik-Ansatz: `docs/i18n-konzept.md`.
 
 ### Bewusste Entscheidungen
 
